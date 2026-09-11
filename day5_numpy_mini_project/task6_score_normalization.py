@@ -1,14 +1,9 @@
 import numpy as np
+from common.numpy_utils import zscore_normalize
 
 
 def normalize_scores(scores: np.ndarray) -> np.ndarray:
-    mean = np.mean(scores, axis=0)
-    std = np.std(scores, axis=0)
-
-    if np.any(std == 0):
-        raise ValueError("Cannot normalize a column with zero standard deviation")
-
-    return (scores - mean) / std
+    return zscore_normalize(scores)
 
 
 def main():
@@ -21,6 +16,7 @@ def main():
     print("-------------------")
     print("Original shape:", scores.shape)
     print("Normalized shape:", normalized.shape)
+
     print("\nFirst 5 normalized students:")
     print(normalized[:5])
 
