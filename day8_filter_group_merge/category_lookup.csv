@@ -1,0 +1,18 @@
+lookup_df = pd.DataFrame({
+    "Category": [
+        "Electronics",
+        "Furniture",
+        "Clothing",
+        "Books",
+        "Grocery",
+        "Accessories"
+    ],
+    "Department": [
+        "Technology",
+        "Home",
+        "Fashion",
+        "Education",
+        "Food",
+        "General"
+    ]
+})
