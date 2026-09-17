@@ -1,6 +1,7 @@
+
 import pandas as pd
 
-from day8_filter_group_merge import merge_datasets
+from day8_filter_group_merge import merge_datasets, top_n_per_group
 
 
 def create_test_data():
@@ -19,40 +20,81 @@ def create_test_data():
 
 def test_inner_join():
     df1, df2 = create_test_data()
-
     result = merge_datasets(df1, df2, "Category", "inner")
-
     assert len(result) == 2
 
 
 def test_left_join():
     df1, df2 = create_test_data()
-
     result = merge_datasets(df1, df2, "Category", "left")
-
     assert len(result) == 3
 
 
 def test_right_join():
     df1, df2 = create_test_data()
-
     result = merge_datasets(df1, df2, "Category", "right")
-
     assert len(result) == 3
 
 
 def test_outer_join():
     df1, df2 = create_test_data()
-
     result = merge_datasets(df1, df2, "Category", "outer")
-
     assert len(result) == 4
 
 
 def test_inner_join_values():
     df1, df2 = create_test_data()
-
     result = merge_datasets(df1, df2, "Category", "inner")
 
     assert "Technology" in result["Department"].values
     assert "Home" in result["Department"].values
+
+
+def test_top_n_per_group():
+    df = pd.DataFrame({
+        "Customer": ["A", "A", "A", "A", "B", "B"],
+        "Quantity": [1, 5, 3, 2, 4, 1]
+    })
+
+    result = top_n_per_group(
+        df,
+        group_col="Customer",
+        sort_col="Quantity",
+        n=3
+    )
+
+    assert len(result) == 5
+
+
+def test_max_three_records_per_customer():
+    df = pd.DataFrame({
+        "Customer": ["A", "A", "A", "A", "B", "B"],
+        "Quantity": [1, 5, 3, 2, 4, 1]
+    })
+
+    result = top_n_per_group(
+        df,
+        group_col="Customer",
+        sort_col="Quantity",
+        n=3
+    )
+
+    counts = result["Customer"].value_counts()
+
+    assert counts.max() <= 3
+
+
+def test_top_record_is_highest_quantity():
+    df = pd.DataFrame({
+        "Customer": ["A", "A", "A"],
+        "Quantity": [2, 5, 3]
+    })
+
+    result = top_n_per_group(
+        df,
+        group_col="Customer",
+        sort_col="Quantity",
+        n=1
+    )
+
+    assert result.iloc[0]["Quantity"] == 5
