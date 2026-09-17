@@ -10,6 +10,7 @@ from pathlib import Path
 # Day 7 cleaned dataset location
 DATA_PATH = (
     Path(__file__).parent.parent
+    / "epic2_pandas"
     / "data"
     / "cleaned_dataset.csv"
 )
@@ -32,11 +33,11 @@ def filter_records(
     Filter records using multiple conditions.
 
     Demonstrates:
-    - & : AND conditions
-    - | : OR conditions
-    - isin() : match multiple values
-    - between() : filter a range
-    - query() : query-based filtering
+    - &: AND conditions
+    - |: OR conditions
+    - isin(): match multiple values
+    - between(): filter a range
+    - query(): query-based filtering
     """
 
     result = df.copy()
@@ -128,6 +129,8 @@ def merge_datasets(
     left: all rows from left dataset
     right: all rows from right dataset
     outer: all rows from both datasets
+
+    validate="many_to_one" prevents unexpected row multiplication.
     """
 
     return pd.merge(
@@ -257,14 +260,16 @@ def main():
             "Furniture",
             "Clothing",
             "Books",
-            "Grocery"
+            "Grocery",
+            "Accessories"
         ],
         "Department": [
             "Technology",
             "Home",
             "Fashion",
             "Education",
-            "Food"
+            "Food",
+            "General"
         ]
     })
 
@@ -302,6 +307,14 @@ def main():
 
     print("\nMerged Dataset Preview")
     print(merged_df.head())
+
+    print(f"\nMerged Rows: {len(merged_df)}")
+    print(f"Original Rows: {len(df)}")
+
+    if len(merged_df) == len(df):
+        print("Merge Validation: No unexpected row multiplication")
+    else:
+        print("Merge Validation: Row count changed")
 
     # ---------------- Top N ----------------
 
