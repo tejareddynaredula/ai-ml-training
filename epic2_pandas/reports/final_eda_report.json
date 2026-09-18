@@ -1,0 +1,139 @@
+{
+    "dataset_shape": {
+        "rows": 150,
+        "columns": 7
+    },
+    "numeric_statistics": {
+        "Order_ID": {
+            "count": 150.0,
+            "mean": 1075.45,
+            "std": 43.43,
+            "min": 1001.0,
+            "25%": 1038.25,
+            "50%": 1075.0,
+            "75%": 1112.75,
+            "max": 1150.0
+        },
+        "Quantity": {
+            "count": 150.0,
+            "mean": 2.95,
+            "std": 1.41,
+            "min": 1.0,
+            "25%": 2.0,
+            "50%": 3.0,
+            "75%": 4.0,
+            "max": 5.0
+        },
+        "Unit_Price": {
+            "count": 150.0,
+            "mean": 24948.32,
+            "std": 13425.33,
+            "min": 912.0,
+            "25%": 14459.5,
+            "50%": 24403.28,
+            "75%": 35734.0,
+            "max": 49615.0
+        }
+    },
+    "categorical_counts": {
+        "Customer": {
+            "Customer_1": 7,
+            "Customer_2": 1,
+            "Customer_3": 1,
+            "Customer_4": 1,
+            "Customer_5": 1,
+            "Customer_6": 1,
+            "Customer_7": 1,
+            "Customer_8": 1,
+            "Customer_9": 1,
+            "Customer_10": 1
+        },
+        "Product": {
+            "Headphones": 44,
+            "Keyboard": 28,
+            "Phone": 27,
+            "Tablet": 26,
+            "Laptop": 25
+        },
+        "Category": {
+            "Electronics": 79,
+            "Accessories": 71
+        },
+        "Order_Date": {
+            "2026-01-10": 2,
+            "2026-01-29": 2,
+            "2026-02-27": 2,
+            "2026-03-10": 2,
+            "2026-03-12": 2,
+            "2026-03-25": 2,
+            "2026-01-01": 1,
+            "2026-01-02": 1,
+            "2026-01-03": 1,
+            "2026-01-04": 1
+        }
+    },
+    "correlation_matrix": {
+        "Order_ID": {
+            "Order_ID": 1.0,
+            "Quantity": 0.0208,
+            "Unit_Price": 0.0136
+        },
+        "Quantity": {
+            "Order_ID": 0.0208,
+            "Quantity": 1.0,
+            "Unit_Price": -0.172
+        },
+        "Unit_Price": {
+            "Order_ID": 0.0136,
+            "Quantity": -0.172,
+            "Unit_Price": 1.0
+        }
+    },
+    "pivot_tables": {
+        "category_wise_quantity": {
+            "Headphones": {
+                "Accessories": 54.0,
+                "Electronics": 78.0
+            },
+            "Keyboard": {
+                "Accessories": 30.0,
+                "Electronics": 57.0
+            },
+            "Laptop": {
+                "Accessories": 39.0,
+                "Electronics": 34.0
+            },
+            "Phone": {
+                "Accessories": 36.0,
+                "Electronics": 38.0
+            },
+            "Tablet": {
+                "Accessories": 43.0,
+                "Electronics": 34.0
+            }
+        },
+        "product_wise_average_price": {
+            "Accessories": {
+                "Headphones": 26363.17,
+                "Keyboard": 23095.09,
+                "Laptop": 26234.41,
+                "Phone": 22207.55,
+                "Tablet": 28448.16
+            },
+            "Electronics": {
+                "Headphones": 23691.75,
+                "Keyboard": 25869.55,
+                "Laptop": 21579.75,
+                "Phone": 31474.22,
+                "Tablet": 17750.01
+            }
+        }
+    },
+    "insights": [
+        "The dataset contains 150 records and 7 columns.",
+        "Headphones is the most frequently occurring product, with 44 records.",
+        "Electronics is the most common category, with 79 records.",
+        "The average order quantity is 2.95 units.",
+        "The correlation between Quantity and Unit_Price is -0.1720, indicating a weak relationship."
+    ]
+}
