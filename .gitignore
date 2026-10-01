@@ -2,3 +2,4 @@ venv_aiml/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+*.joblib
