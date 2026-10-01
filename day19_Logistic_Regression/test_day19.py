@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import pytest
 
-from day19_logistic_regression import sigmoid, logistic_regression_fit, classification_report_dict
+from day19_logistic_regression import sigmoid, logistic_regression_fit, classification_report_dict, threshold_analysis
 
 
 def test_sigmoid_zero():
@@ -79,3 +79,20 @@ def test_report_perfect_predictions():
 def test_report_rejects_length_mismatch():
     with pytest.raises(ValueError):
         classification_report_dict(Y_TRUE, Y_TRUE[:-1], Y_PROB)
+
+
+def test_threshold_analysis_one_row_per_threshold():
+    df = threshold_analysis(Y_TRUE, Y_PROB, [0.3, 0.5, 0.7])
+    assert len(df) == 3
+    assert list(df["threshold"]) == [0.3, 0.5, 0.7]
+    assert {"precision", "recall", "F1"} <= set(df.columns)
+
+
+def test_higher_threshold_never_raises_recall():
+    df = threshold_analysis(Y_TRUE, Y_PROB, [0.3, 0.5, 0.7])
+    assert df["recall"].is_monotonic_decreasing
+
+
+def test_threshold_analysis_rejects_bad_threshold():
+    with pytest.raises(ValueError):
+        threshold_analysis(Y_TRUE, Y_PROB, [1.5])

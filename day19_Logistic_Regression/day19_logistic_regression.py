@@ -146,3 +146,75 @@ def classification_report_dict(y_true, y_pred, y_prob) -> dict:
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
         "roc_auc": float(auc),
     }
+
+
+def threshold_analysis(
+    y_true,
+    y_prob,
+    thresholds: list,
+):
+    """Return precision, recall, and F1 for each threshold."""
+    import pandas as pd
+    from sklearn.metrics import precision_score, recall_score, f1_score
+
+    y_true = np.asarray(y_true).reshape(-1)
+    y_prob = np.asarray(y_prob, dtype=float).reshape(-1)
+
+    if len(y_true) == 0:
+        raise ValueError("Inputs cannot be empty.")
+
+    if len(y_true) != len(y_prob):
+        raise ValueError("y_true and y_prob must have equal lengths.")
+
+    if not np.all(np.isin(y_true, [0, 1])):
+        raise ValueError("y_true must contain only 0 and 1.")
+
+    if not np.all(np.isfinite(y_prob)):
+        raise ValueError("Probabilities must be finite.")
+
+    if np.any((y_prob < 0) | (y_prob > 1)):
+        raise ValueError("Probabilities must be between 0 and 1.")
+
+    if not thresholds:
+        raise ValueError("Provide at least one threshold.")
+
+    rows = []
+    for threshold in thresholds:
+        if not 0 <= threshold <= 1:
+            raise ValueError("Thresholds must be between 0 and 1.")
+
+        predictions = (y_prob >= threshold).astype(int)
+        rows.append({
+            "threshold": threshold,
+            "precision": precision_score(
+                y_true, predictions, zero_division=0
+            ),
+            "recall": recall_score(
+                y_true, predictions, zero_division=0
+            ),
+            "F1": f1_score(
+                y_true, predictions, zero_division=0
+            ),
+        })
+
+    return pd.DataFrame(rows)
+
+
+if __name__ == "__main__":
+    # Small example: learn a binary classification boundary.
+    X_raw = np.array([1, 2, 3, 4, 5, 6], dtype=float)
+    X = np.column_stack((np.ones(len(X_raw)), X_raw))
+    y = np.array([0, 0, 0, 1, 1, 1])
+
+    coefficients, losses = logistic_regression_fit(
+        X, y, lr=0.1, epochs=5000
+    )
+
+    probabilities = sigmoid(X @ coefficients)
+    predictions = (probabilities >= 0.5).astype(int)
+
+    print("Learned coefficients:", coefficients)
+    print("Initial log-loss:", losses[0])
+    print("Final log-loss:", losses[-1])
+    print("Predictions:", predictions)
+    print("Probabilities:", np.round(probabilities, 3))
