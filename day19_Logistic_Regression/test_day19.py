@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import pytest
 
-from day19_logistic_regression import sigmoid, logistic_regression_fit
+from day19_logistic_regression import sigmoid, logistic_regression_fit, classification_report_dict
 
 
 def test_sigmoid_zero():
@@ -53,3 +53,29 @@ def test_fit_rejects_bad_labels():
     X, _ = _toy_data(n=10)
     with pytest.raises(ValueError):
         logistic_regression_fit(X, np.arange(10), lr=0.1, epochs=5)
+
+
+Y_TRUE = np.array([0, 0, 1, 1, 1, 0, 1, 0])
+Y_PROB = np.array([0.1, 0.4, 0.35, 0.8, 0.7, 0.2, 0.9, 0.6])
+
+
+def test_report_metrics_in_unit_interval():
+    rep = classification_report_dict(Y_TRUE, (Y_PROB >= 0.5).astype(int), Y_PROB)
+    for key in ["accuracy", "precision", "recall", "f1", "roc_auc"]:
+        assert 0.0 <= rep[key] <= 1.0
+
+
+def test_report_confusion_matrix_counts_all_samples():
+    rep = classification_report_dict(Y_TRUE, (Y_PROB >= 0.5).astype(int), Y_PROB)
+    assert rep["confusion_matrix"].shape == (2, 2)
+    assert rep["confusion_matrix"].sum() == len(Y_TRUE)
+
+
+def test_report_perfect_predictions():
+    rep = classification_report_dict(Y_TRUE, Y_TRUE, Y_TRUE.astype(float))
+    assert rep["accuracy"] == rep["f1"] == rep["roc_auc"] == 1.0
+
+
+def test_report_rejects_length_mismatch():
+    with pytest.raises(ValueError):
+        classification_report_dict(Y_TRUE, Y_TRUE[:-1], Y_PROB)

@@ -91,3 +91,58 @@ def logistic_regression_fit(
     loss_history.append(float(final_loss))
 
     return coefficients, loss_history
+
+
+def classification_report_dict(y_true, y_pred, y_prob) -> dict:
+    """Calculate classification metrics using scikit-learn."""
+    from sklearn.metrics import (
+        accuracy_score,
+        precision_score,
+        recall_score,
+        f1_score,
+        roc_auc_score,
+        confusion_matrix,
+    )
+
+    y_true = np.asarray(y_true).reshape(-1)
+    y_pred = np.asarray(y_pred).reshape(-1)
+    y_prob = np.asarray(y_prob, dtype=float).reshape(-1)
+
+    if len(y_true) == 0:
+        raise ValueError("Inputs cannot be empty.")
+
+    if not (len(y_true) == len(y_pred) == len(y_prob)):
+        raise ValueError("All inputs must have the same length.")
+
+    if not np.all(np.isin(y_true, [0, 1])):
+        raise ValueError("y_true must contain only 0 and 1.")
+
+    if not np.all(np.isin(y_pred, [0, 1])):
+        raise ValueError("y_pred must contain only 0 and 1.")
+
+    if not np.all(np.isfinite(y_prob)):
+        raise ValueError("Probabilities must be finite.")
+
+    if np.any((y_prob < 0) | (y_prob > 1)):
+        raise ValueError("Probabilities must be between 0 and 1.")
+
+    auc = (
+        roc_auc_score(y_true, y_prob)
+        if len(np.unique(y_true)) == 2
+        else float("nan")
+    )
+
+    return {
+        "confusion_matrix": confusion_matrix(
+            y_true, y_pred, labels=[0, 1]
+        ),
+        "accuracy": float(accuracy_score(y_true, y_pred)),
+        "precision": float(
+            precision_score(y_true, y_pred, zero_division=0)
+        ),
+        "recall": float(
+            recall_score(y_true, y_pred, zero_division=0)
+        ),
+        "f1": float(f1_score(y_true, y_pred, zero_division=0)),
+        "roc_auc": float(auc),
+    }
